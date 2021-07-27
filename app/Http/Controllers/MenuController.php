@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
-use App\Models\Restaurant;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
@@ -16,9 +15,7 @@ class MenuController extends Controller
     public function index()
     {
         $menus = Menu::all();
-       return view('menu.index', ['menus' => $menus]);
-
-
+        return view('menu.index', ['menus' => $menus]);
     }
 
     /**
@@ -44,8 +41,7 @@ class MenuController extends Controller
         $menu->price = $request->menu_price;
         $menu->weight = $request->menu_weight;
         $menu->meat = $request->menu_meat;
-        $menu->about = $request->menu_about;
-        
+        $menu->about = $request->menu_about;        
         $menu->save();
         return redirect()->route('menu.index');
         
@@ -102,8 +98,8 @@ class MenuController extends Controller
     public function destroy(Menu $menu)
     {        
        
-       if($menu->menuRestaurants->count()){
-        return 'Trinti negalima, nes turi patiekalu';
+        if($menu->menuRestaurants->count()){
+        return 'Cannot be deleted! There is unfinished order!';
     }
     
     $menu->delete();

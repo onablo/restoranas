@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Menu;
 use App\Models\Restaurant;
+use App\Models\Menu;
 use Illuminate\Http\Request;
 
 class RestaurantController extends Controller
@@ -27,8 +27,8 @@ class RestaurantController extends Controller
      */
     public function create()
     {
-       $restaurants = Restaurant::all();
-       return view('restaurant.create', ['restaurants' => $restaurants]);
+       $menus = Menu::all();
+       return view('restaurant.create', ['menus' => $menus]);
     }
 
     /**
@@ -40,6 +40,7 @@ class RestaurantController extends Controller
     public function store(Request $request)
     {
        $restaurant = new Restaurant;
+
        $restaurant->title = $request->restaurant_title;
        $restaurant->customers = $request->restaurant_customers;
        $restaurant->employees = $request->restaurant_employees;       
@@ -69,7 +70,7 @@ class RestaurantController extends Controller
     public function edit(Restaurant $restaurant)
     {
         $menus = Menu::all();
-       return view('restaurant.edit', ['restaurant' => $restaurant, 'menus' => $menus]);
+       return view('restaurant.edit', ['menus' => $menus, 'restaurant' => $restaurant]);
 
     }
 

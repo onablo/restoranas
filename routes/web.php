@@ -23,7 +23,7 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::group(['prefix' => 'menus'], function(){
+Route::group(['prefix' => 'menus'], function() {
     Route::get('', [MenuController::class, 'index'])->name('menu.index');
     Route::get('create', [MenuController::class, 'create'])->name('menu.create');
     Route::post('store', [MenuController::class, 'store'])->name('menu.store');
@@ -34,7 +34,7 @@ Route::group(['prefix' => 'menus'], function(){
 });
 
 
-Route::group(['prefix' => 'restaurants'], function(){
+Route::group(['prefix' => 'restaurants'], function() {
    Route::get('', [RestaurantController::class, 'index'])->name('restaurant.index');
    Route::get('create', [RestaurantController::class, 'create'])->name('restaurant.create');
    Route::post('store', [RestaurantController::class, 'store'])->name('restaurant.store');
