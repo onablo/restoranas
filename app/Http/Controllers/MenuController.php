@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use Validator;
 
 class MenuController extends Controller
 {
@@ -36,6 +37,20 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(),
+            [
+                'menu_title' => ['required', 'min:5', 'max:200'],
+                'menu_price' => ['required', 'min:1', 'max:1000'],
+                'menu_weight' => ['required', 'integer', 'min:1', 'max:1000'],
+                'menu_meat' => ['required', 'min:1', 'max:1000'],
+                'menu_about' => ['required'],
+            ],
+        );
+        if ($validator->fails()) {
+            $request->flash();
+            return redirect()->back()->withErrors($validator);
+        } 
+        
         $menu = new Menu;
         $menu->title = $request->menu_title;
         $menu->price = $request->menu_price;
@@ -43,7 +58,7 @@ class MenuController extends Controller
         $menu->meat = $request->menu_meat;
         $menu->about = $request->menu_about;        
         $menu->save();
-        return redirect()->route('menu.index');
+        return redirect()->route('menu.index')->with('success_message', 'Adding is succesfully.');
         
     }
 
@@ -78,6 +93,20 @@ class MenuController extends Controller
      */
     public function update(Request $request, Menu $menu)
     {
+        $validator = Validator::make($request->all(),
+            [
+                'menu_title' => ['required', 'min:3', 'max:200'],
+                'menu_price' => ['required', 'min:1', 'max:1000'],
+                'menu_weight' => ['required', 'integer', 'min:1', 'max:1000'],
+                'menu_meat' => ['required', 'min:1', 'max:1000'],
+                'menu_about' => ['required'],
+            ],
+        );
+        if ($validator->fails()) {
+            $request->flash();
+            return redirect()->back()->withErrors($validator);
+        }
+
         $menu->title = $request->menu_title;
         $menu->price = $request->menu_price;
         $menu->weight = $request->menu_weight;
@@ -85,7 +114,7 @@ class MenuController extends Controller
         $menu->about = $request->menu_about;
         $menu->save();       
         
-        return redirect()->route('menu.index');
+        return redirect()->route('menu.index')->with('success_message', 'Edit is succesfully.');
 
     }
 
@@ -99,11 +128,11 @@ class MenuController extends Controller
     {        
        
         if($menu->menuRestaurants->count()){
-        return 'Cannot be deleted! There is unfinished order!';
+        return redirect()->back()->with('success_message', 'Cannot be deleted! Must be approved by the manager!');
     }
     
     $menu->delete();
-    return redirect()->route('menu.index');
+    return redirect()->route('menu.index')->with('success_message', 'Delete is succesfully.');
     
 
     }

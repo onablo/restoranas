@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Restaurant;
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use Validator;
+
 
 class RestaurantController extends Controller
 {
@@ -39,6 +41,21 @@ class RestaurantController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(),
+        [
+            'restaurant_title' => ['required', 'min:3', 'max:100'],
+            'restaurant_customers' => ['required', 'integer', 'min:1', 'max:100'],
+            'restaurant_employees' => ['required', 'integer', 'min:1', 'max:100'],
+            'menu_id' => ['required', 'integer', 'min:1'],
+        ],
+        );
+        
+        if ($validator->fails()) {
+            $request->flash();
+            return redirect()->back()->withErrors($validator);
+        }
+ 
+
        $restaurant = new Restaurant;
 
        $restaurant->title = $request->restaurant_title;
@@ -46,7 +63,7 @@ class RestaurantController extends Controller
        $restaurant->employees = $request->restaurant_employees;       
        $restaurant->menu_id = $request->menu_id;
        $restaurant->save();
-       return redirect()->route('restaurant.index');
+       return redirect()->route('restaurant.index')->with('success_message', 'Adding is succesfully.');
 
     }
 
@@ -83,12 +100,26 @@ class RestaurantController extends Controller
      */
     public function update(Request $request, Restaurant $restaurant)
     {
+        $validator = Validator::make($request->all(),
+            [
+                'restaurant_title' => ['required', 'min:3', 'max:100'],
+                'restaurant_customers' => ['required', 'integer', 'min:1', 'max:100'],
+                'restaurant_employees' => ['required', 'integer', 'min:1', 'max:100'],
+                'menu_id' => ['required', 'integer', 'min:1'],
+            ],
+        );
+        
+        if ($validator->fails()) {
+            $request->flash();
+            return redirect()->back()->withErrors($validator);
+        }
+
         $restaurant->title = $request->restaurant_title;
         $restaurant->customers = $request->restaurant_customers;
         $restaurant->employees = $request->restaurant_employees;       
         $restaurant->menu_id = $request->menu_id;
         $restaurant->save();
-        return redirect()->route('restaurant.index');
+        return redirect()->route('restaurant.index')->with('success_message', 'Edit is succesfully.');
     }
 
     /**
@@ -100,7 +131,7 @@ class RestaurantController extends Controller
     public function destroy(Restaurant $restaurant)
     {
         $restaurant->delete();
-       return redirect()->route('restaurant.index');
+       return redirect()->route('restaurant.index')->with('success_message', 'Delete is succesfully.');
 
     }
 }
